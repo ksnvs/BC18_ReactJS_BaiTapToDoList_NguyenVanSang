@@ -72,6 +72,17 @@ export const toDoListReducer = (state = initialState, action) => {
       return { ...state, taskEdit: action.task };
     }
     case UPDATE_TASK: {
+      if (action.taskName.trim() == "") {
+        alert(`Task name is empty. Please fill task name !`);
+        return { ...state };
+      }
+      let indexName = cloneTaskList.findIndex(
+        (task) => task.taskName === action.taskName
+      );
+      if (indexName !== -1) {
+        alert(`Task name already exist !`);
+        return { ...state };
+      }
       state.taskEdit = { ...state.taskEdit, taskName: action.taskName };
       let index = cloneTaskList.findIndex(
         (task) => task.id === state.taskEdit.id

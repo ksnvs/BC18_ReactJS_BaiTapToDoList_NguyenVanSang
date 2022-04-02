@@ -29,7 +29,7 @@ import { arrTheme } from "../Themes/ThemeManager";
 class ToDoList extends Component {
   state = {
     taskName: ``,
-    task: {},
+    disabled: true,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -49,7 +49,9 @@ class ToDoList extends Component {
             <Th className="text-right">
               <Button
                 onClick={() => {
-                  this.props.handleEditTask(task);
+                  this.setState({ disabled: false }, () => {
+                    this.props.handleEditTask(task);
+                  });
                 }}
                 className="ml-1"
               >
@@ -146,12 +148,38 @@ class ToDoList extends Component {
           >
             <i className="fa fa-plus mr-2"></i>Add task
           </Button>
-          <Button
-            onClick={() => this.props.handleUpdateTask(this.state.taskName)}
-            className="ml-1"
-          >
-            <i className="fa fa-upload mr-2"></i>Update task
-          </Button>
+          {this.state.disabled ? (
+            <Button
+              disabled
+              onClick={() => this.props.handleUpdateTask(this.state.taskName)}
+              className="ml-1"
+            >
+              <i className="fa fa-upload mr-2"></i>Update task
+            </Button>
+          ) : this.state.taskName.trim() !== "" ? (
+            <Button
+              onClick={() => {
+                this.setState({ disabled: true }, () =>
+                  this.props.handleUpdateTask(this.state.taskName)
+                );
+              }}
+              className="ml-1"
+            >
+              <i className="fa fa-upload mr-2"></i>Update task
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                this.setState({ disabled: false }, () =>
+                  this.props.handleUpdateTask(this.state.taskName)
+                );
+              }}
+              className="ml-1"
+            >
+              <i className="fa fa-upload mr-2"></i>Update task
+            </Button>
+          )}
+
           <hr />
           <Heading3 className="mt-3">Task To Do</Heading3>
           <Table>
