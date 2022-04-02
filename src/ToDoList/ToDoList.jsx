@@ -19,6 +19,8 @@ import { connect } from "react-redux";
 import {
   addTaskAction,
   changeThemeAction,
+  deleteTaskAction,
+  doneTaskAction,
 } from "../redux/actions/toDoListAction";
 import { arrTheme } from "../Themes/ThemeManager";
 
@@ -27,7 +29,7 @@ class ToDoList extends Component {
     taskName: ``,
   };
   renderTaskToDo = () => {
-    return this.props.tastList
+    return this.props.taskList
       .filter((task) => !task.done)
       .map((task, index) => {
         return (
@@ -37,10 +39,16 @@ class ToDoList extends Component {
               <Button className="ml-1">
                 <i className="fa fa-edit"></i>
               </Button>
-              <Button className="ml-1">
+              <Button
+                onClick={() => this.props.handleDoneTask(task.id)}
+                className="ml-1"
+              >
                 <i className="fa fa-check"></i>
               </Button>
-              <Button className="ml-1">
+              <Button
+                onClick={() => this.props.handleDeleteTask(task.id)}
+                className="ml-1"
+              >
                 <i className="fa fa-trash"></i>
               </Button>
             </Th>
@@ -50,14 +58,17 @@ class ToDoList extends Component {
   };
 
   renderTaskCompleted = () => {
-    return this.props.tastList
+    return this.props.taskList
       .filter((task) => task.done)
       .map((task, index) => {
         return (
           <Tr key={index}>
             <Th>{task.taskName}</Th>
             <Th className="text-right">
-              <Button className="ml-1">
+              <Button
+                onClick={() => this.props.handleDeleteTask(task.id)}
+                className="ml-1"
+              >
                 <i className="fa fa-trash"></i>
               </Button>
             </Th>
@@ -67,14 +78,9 @@ class ToDoList extends Component {
   };
   handleChangeEvent = (e) => {
     let { name, value } = e.target;
-    this.setState(
-      {
-        [name]: value,
-      },
-      () => {
-        console.log("value: ", this.state);
-      }
-    );
+    this.setState({
+      [name]: value,
+    });
   };
 
   renderTheme = () => {
@@ -124,7 +130,7 @@ class ToDoList extends Component {
             <i className="fa fa-plus mr-2"></i>Add task
           </Button>
           <Button className="ml-1">
-            <i class="fa fa-upload mr-2"></i>Update task
+            <i className="fa fa-upload mr-2"></i>Update task
           </Button>
           <hr />
           <Heading3 className="mt-3">Task To Do</Heading3>
@@ -145,17 +151,23 @@ class ToDoList extends Component {
 const mapStateToProps = (state) => {
   return {
     themeToDoList: state.toDoListReducer.themeToDoList,
-    tastList: state.toDoListReducer.tastList,
+    taskList: state.toDoListReducer.taskList,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleAddTask: (value) => {
-      dispatch(addTaskAction(value));
+    handleAddTask: (newTask) => {
+      dispatch(addTaskAction(newTask));
     },
-    handleChangeTheme: (value) => {
-      dispatch(changeThemeAction(value));
+    handleChangeTheme: (themeId) => {
+      dispatch(changeThemeAction(themeId));
+    },
+    handleDoneTask: (taskId) => {
+      dispatch(doneTaskAction(taskId));
+    },
+    handleDeleteTask: (taskId) => {
+      dispatch(deleteTaskAction(taskId));
     },
   };
 };
