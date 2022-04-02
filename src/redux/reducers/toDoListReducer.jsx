@@ -5,6 +5,7 @@ import {
   CHANGE_THEME,
   DELETE_TASK,
   DONE_TASK,
+  EDIT_TASK,
 } from "../types/toDoListTypes";
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
     { id: 4, taskName: `task 4`, done: false },
     { id: 5, taskName: `task 5`, done: true },
   ],
+  taskEdit: { id: 1, taskName: `task 1`, done: true },
 };
 
 export const toDoListReducer = (state = initialState, action) => {
@@ -64,6 +66,9 @@ export const toDoListReducer = (state = initialState, action) => {
         );
       }
       return { ...state, taskList: cloneTaskList };
+    }
+    case EDIT_TASK: {
+      return { ...state, taskEdit: action.task };
     }
     default:
       return { ...state };

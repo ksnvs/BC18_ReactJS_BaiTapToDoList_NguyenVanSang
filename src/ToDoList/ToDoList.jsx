@@ -21,6 +21,7 @@ import {
   changeThemeAction,
   deleteTaskAction,
   doneTaskAction,
+  editTaskAction,
 } from "../redux/actions/toDoListAction";
 import { arrTheme } from "../Themes/ThemeManager";
 
@@ -28,6 +29,14 @@ class ToDoList extends Component {
   state = {
     taskName: ``,
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.taskEdit.taskName !== this.props.taskEdit.taskName) {
+      this.setState({
+        taskName: this.props.taskEdit.taskName,
+      });
+    }
+  }
   renderTaskToDo = () => {
     return this.props.taskList
       .filter((task) => !task.done)
@@ -36,7 +45,10 @@ class ToDoList extends Component {
           <Tr key={index}>
             <Th>{task.taskName}</Th>
             <Th className="text-right">
-              <Button className="ml-1">
+              <Button
+                onClick={() => this.props.handleEditTask(task)}
+                className="ml-1"
+              >
                 <i className="fa fa-edit"></i>
               </Button>
               <Button
@@ -109,6 +121,7 @@ class ToDoList extends Component {
           </Dropdown>
           <Heading2 className="mt-3">To Do List</Heading2>
           <TextField
+            value={this.state.taskName}
             onChange={(e) => {
               this.handleChangeEvent(e);
             }}
@@ -152,6 +165,7 @@ const mapStateToProps = (state) => {
   return {
     themeToDoList: state.toDoListReducer.themeToDoList,
     taskList: state.toDoListReducer.taskList,
+    taskEdit: state.toDoListReducer.taskEdit,
   };
 };
 
@@ -168,6 +182,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleDeleteTask: (taskId) => {
       dispatch(deleteTaskAction(taskId));
+    },
+    handleEditTask: (task) => {
+      dispatch(editTaskAction(task));
     },
   };
 };
