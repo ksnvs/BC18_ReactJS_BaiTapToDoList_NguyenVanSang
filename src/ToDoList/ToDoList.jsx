@@ -143,6 +143,7 @@ class ToDoList extends Component {
                 done: false,
               };
               this.props.handleAddTask(newTask);
+              this.setState({ taskName: `` });
             }}
             className="ml-1"
           >
