@@ -16,6 +16,11 @@ import { TextField } from "../Components/TextField";
 import { Button } from "../Components/Button";
 import { Table, Thead, Tbody, Tr, Th, Td } from "../Components/Table";
 import { connect } from "react-redux";
+import {
+  addTaskAction,
+  changeThemeAction,
+} from "../redux/actions/toDoListAction";
+import { arrTheme } from "../Themes/ThemeManager";
 
 class ToDoList extends Component {
   state = {
@@ -23,7 +28,7 @@ class ToDoList extends Component {
   };
   renderTaskToDo = () => {
     return this.props.tastList
-      .filter((task) => task.done)
+      .filter((task) => !task.done)
       .map((task, index) => {
         return (
           <Tr key={index}>
@@ -46,7 +51,7 @@ class ToDoList extends Component {
 
   renderTaskCompleted = () => {
     return this.props.tastList
-      .filter((task) => !task.done)
+      .filter((task) => task.done)
       .map((task, index) => {
         return (
           <Tr key={index}>
@@ -71,14 +76,30 @@ class ToDoList extends Component {
       }
     );
   };
+
+  renderTheme = () => {
+    return arrTheme.map((theme, index) => {
+      return (
+        <option value={theme.id} key={index}>
+          {theme.name}
+        </option>
+      );
+    });
+  };
+  handleOnChangeTheme = (e) => {
+    let { value } = e.target;
+    this.props.handleChangeTheme(value);
+  };
   render() {
     return (
       <ThemeProvider theme={this.props.themeToDoList}>
         <Container className="container w-50">
-          <Dropdown>
-            <option>Dark Theme</option>
-            <option>Light Theme</option>
-            <option>Primary Theme</option>
+          <Dropdown
+            onChange={(e) => {
+              this.handleOnChangeTheme(e);
+            }}
+          >
+            {this.renderTheme()}
           </Dropdown>
           <Heading2 className="mt-3">To Do List</Heading2>
           <TextField
@@ -91,11 +112,12 @@ class ToDoList extends Component {
           <Button
             onClick={() => {
               let { taskName } = this.state;
-              let task = {
+              let newTask = {
                 id: Date.now(),
                 taskName: taskName,
                 done: false,
               };
+              this.props.handleAddTask(newTask);
             }}
             className="ml-1"
           >
@@ -128,7 +150,14 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  dispatch({});
+  return {
+    handleAddTask: (value) => {
+      dispatch(addTaskAction(value));
+    },
+    handleChangeTheme: (value) => {
+      dispatch(changeThemeAction(value));
+    },
+  };
 };
 
-export default connect(mapStateToProps)(ToDoList);
+export default connect(mapStateToProps, mapDispatchToProps)(ToDoList);
