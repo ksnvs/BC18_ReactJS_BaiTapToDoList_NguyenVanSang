@@ -6,6 +6,7 @@ import {
   DELETE_TASK,
   DONE_TASK,
   EDIT_TASK,
+  UPDATE_TASK,
 } from "../types/toDoListTypes";
 
 const initialState = {
@@ -69,6 +70,17 @@ export const toDoListReducer = (state = initialState, action) => {
     }
     case EDIT_TASK: {
       return { ...state, taskEdit: action.task };
+    }
+    case UPDATE_TASK: {
+      state.taskEdit = { ...state.taskEdit, taskName: action.taskName };
+      let index = cloneTaskList.findIndex(
+        (task) => task.id === state.taskEdit.id
+      );
+      if (index !== -1) {
+        cloneTaskList[index] = state.taskEdit;
+      }
+      state.taskEdit = { ...state.taskEdit, id: -1, taskName: ``, done: false };
+      return { ...state, taskList: cloneTaskList };
     }
     default:
       return { ...state };

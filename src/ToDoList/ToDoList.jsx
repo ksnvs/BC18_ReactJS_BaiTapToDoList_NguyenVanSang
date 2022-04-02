@@ -22,12 +22,14 @@ import {
   deleteTaskAction,
   doneTaskAction,
   editTaskAction,
+  updateTaskAction,
 } from "../redux/actions/toDoListAction";
 import { arrTheme } from "../Themes/ThemeManager";
 
 class ToDoList extends Component {
   state = {
     taskName: ``,
+    task: {},
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -46,7 +48,9 @@ class ToDoList extends Component {
             <Th>{task.taskName}</Th>
             <Th className="text-right">
               <Button
-                onClick={() => this.props.handleEditTask(task)}
+                onClick={() => {
+                  this.props.handleEditTask(task);
+                }}
                 className="ml-1"
               >
                 <i className="fa fa-edit"></i>
@@ -142,7 +146,10 @@ class ToDoList extends Component {
           >
             <i className="fa fa-plus mr-2"></i>Add task
           </Button>
-          <Button className="ml-1">
+          <Button
+            onClick={() => this.props.handleUpdateTask(this.state.taskName)}
+            className="ml-1"
+          >
             <i className="fa fa-upload mr-2"></i>Update task
           </Button>
           <hr />
@@ -185,6 +192,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleEditTask: (task) => {
       dispatch(editTaskAction(task));
+    },
+    handleUpdateTask: (taskName) => {
+      dispatch(updateTaskAction(taskName));
     },
   };
 };
